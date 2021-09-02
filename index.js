@@ -1,21 +1,22 @@
 // Game constants and variables
 
-let inputDir = { x: 0, y: 0 };
 const foodSound = new Audio('food.wav');
 const gameOverSound = new Audio('gameOver.wav');
 const musicSound = new Audio('music.mp3');
 const moveSound = new Audio('move.wav');
+let inputDir = { x: 0, y: 0 };
 let speed = 10;
 let score = 0;
 let finalscore = 0;
 let level = 1;
 let specialCollected = 0;
+let setSpecialPosition = 0;
 let lastPaintTime = 0;
 let snakeArr = [ 
     { x: 13, y: 15 }
 ];
 let food = { x: 2, y: 9 }
-let specialFood = {x:10, y:11};
+let specialFood = {x:-1, y:-1};
 
 //Game Functions
 function main(ctime) {
@@ -37,7 +38,7 @@ function isCollide(snake) {
     }
 
     //iF YOU BUMP INTO WALL
-    if(snake[0].x >=18 || snake[0].x <=0 || snake[0].y >=18 || snake[0].y <=0) {
+    if(snake[0].x >=19 || snake[0].x <=0 || snake[0].y >=19 || snake[0].y <=0) {
         return true;
     }
 
@@ -50,15 +51,16 @@ function gameEngine() {
     if(isCollide(snakeArr)) {
         gameOverSound.play();
         musicSound.pause();
-        inputDir = {x:0, y:0};
         alert("Game Over! Press any key to play again.");
-        snakeArr = [{x: 13 , y: 15}];
         musicSound.play();
+        inputDir = {x:0, y:0};
+        snakeArr = [{x: 13 , y: 15}];
         specialFood = {x:-1, y:-1};
         speed=10;
         level=1;
         score=0;
         finalscore = 0;
+        setSpecialPosition=0;
         specialCollected=0;
         scoreBox.innerHTML = "Score: "+ finalscore;
 
@@ -86,6 +88,9 @@ function gameEngine() {
         if(specialCollected<2) {
             specialCollected += 1;
         }
+        if(specialCollected==2) {
+            setSpecialPosition=1;
+        }
 
     }
 
@@ -100,15 +105,15 @@ function gameEngine() {
         }
         scoreBox.innerHTML = "Score: "+ finalscore;
         // snakeArr.unshift({x: snakeArr[0].x + inputDir.x, y: snakeArr[0].y + inputDir.y});
-        if(specialCollected==2) { 
-            let a = 1;
-            let b = 17;
-            specialFood = {x : Math.round(a + (b-a)* Math.random()), y: Math.round(a + (b-a)* Math.random())}
-        }
-        else {
-            specialFood = {x:-1 , y:-1};
-        }
         specialCollected=0;
+        setSpecialPosition=0;
+    }
+
+    if(specialCollected==2 && setSpecialPosition==1) { 
+        let a = 1;
+        let b = 17;
+        specialFood = {x : Math.round(a + (b-a)* Math.random()), y: Math.round(a + (b-a)* Math.random())}
+        setSpecialPosition=0;
     }
 
 
@@ -151,6 +156,11 @@ function gameEngine() {
         specialFoodElement.classList.add('special')
         board.append(specialFoodElement);
         
+    }
+    if(specialCollected==2) {
+        setTimeout(() => {
+            specialCollected=0;
+        }, 5000);
     }
 
 }
