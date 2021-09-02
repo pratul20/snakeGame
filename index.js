@@ -152,11 +152,6 @@ function gameEngine() {
         board.append(specialFoodElement);
         
     }
-    if(specialCollected==2) {
-        setTimeout(() => {
-            specialCollected=0;
-        }, 5000);
-    }
 
 }
 
